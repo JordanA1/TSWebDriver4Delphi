@@ -11,14 +11,22 @@ object FrmMain: TFrmMain
   Font.Name = 'Segoe UI'
   Font.Style = []
   Position = poScreenCenter
+  OnClose = FormClose
   OnCreate = FormCreate
   TextHeight = 15
+  object Label1: TLabel
+    Left = 8
+    Top = 83
+    Width = 327
+    Height = 15
+    Caption = 'C:\chromedriver>chromedriver.exe --port=9515 kell elind'#237'tani'
+  end
   object MemLog: TMemo
     AlignWithMargins = True
     Left = 5
-    Top = 74
+    Top = 131
     Width = 518
-    Height = 272
+    Height = 215
     Margins.Left = 5
     Margins.Top = 5
     Margins.Right = 5
@@ -32,8 +40,6 @@ object FrmMain: TFrmMain
     ParentFont = False
     ScrollBars = ssVertical
     TabOrder = 0
-    ExplicitTop = 65
-    ExplicitWidth = 512
   end
   object btnNavigateTo: TButton
     Left = 8

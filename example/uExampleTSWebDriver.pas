@@ -25,6 +25,7 @@ type
     btnExample2: TButton;
     btnExample3: TButton;
     Button1: TButton;
+    Label1: TLabel;
     procedure FormCreate(Sender: TObject);
     procedure btnExecuteScriptClick(Sender: TObject);
     procedure btnExample4Click(Sender: TObject);
@@ -34,12 +35,13 @@ type
     procedure btnNavigateToClick(Sender: TObject);
     procedure btnExample1Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     { Private declarations }
     FDriver: ITSWebDriverBase;
     FChromeDriver: ITSWebDriverBrowser;
     FBy: TSBy;
-    procedure Run(AProc: TProc; AUrl: string = ''; ACloseSection: Boolean = True);
+    procedure Run(AProc: TProc; AUrl: string = ''; ACloseSection: Boolean = False ); // True);
     procedure ExampleLoginAndScrap;
     procedure ExampleDynamicElement;
     procedure ExampleGitHubBio;
@@ -56,22 +58,30 @@ implementation
 
 {$R *.dfm}
 
+Uses ShellAPi;
+
+procedure TFrmMain.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+ FDriver.Stop;
+end;
+
 procedure TFrmMain.FormCreate(Sender: TObject);
 begin
   ReportMemoryLeaksOnShutdown := True;
 
   FDriver := TTSWebDriver.New.Driver();
-  //FDriver.Options.DriverPath('.\a\b\c\webdriver.exe');
+  FDriver.Options.DriverPath('C:\chromedriver\chromedriver.exe');
 
   FChromeDriver := FDriver.Browser().Chrome();
-  //FChromeDriver
-    //.AddArgument('window-size', '1000,800')
-    //.AddArgument('user-data-dir', 'E:/Dev/Delphi/TSWebDriver4Delphi/example/cache');
+  FChromeDriver
+    .AddArgument('window-size', '1000,800')
+    .AddArgument('user-data-dir', 'C:/Dev/Delphi/TSWebDriver4Delphi/example/cache');
+  ShellExecute(0, 'open', 'C:\chromedriver\chromedriver.exe', '--port=9515', nil, SW_SHOWNORMAL);
 
   FDriver.Start();
 end;
 
-procedure TFrmMain.Run(AProc: TProc; AUrl: string = ''; ACloseSection: Boolean = True);
+procedure TFrmMain.Run(AProc: TProc; AUrl: string = ''; ACloseSection: Boolean = False);
 begin
   MemLog.Clear();
 
