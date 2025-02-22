@@ -12,7 +12,7 @@ uses
   TSWebDriver.IElement,
   TSWebDriver.Interfaces,
   TSWebDriver.By,
-  TSWebDriver.IBrowser;
+  TSWebDriver.IBrowser, My_Additional;
 
 type
   TFrmMain = class(TForm)
@@ -23,19 +23,22 @@ type
     btnExample5: TButton;
     btnExample1: TButton;
     btnExample2: TButton;
-    btnExample3: TButton;
+    btnPbs: TButton;
     Button1: TButton;
     Label1: TLabel;
+    MyBitBtn1: TMyBitBtn;
+    pbsEdit: TEdit;
     procedure FormCreate(Sender: TObject);
     procedure btnExecuteScriptClick(Sender: TObject);
     procedure btnExample4Click(Sender: TObject);
     procedure btnExample5Click(Sender: TObject);
     procedure btnExample2Click(Sender: TObject);
-    procedure btnExample3Click(Sender: TObject);
+    procedure btnPbsClick(Sender: TObject);
     procedure btnNavigateToClick(Sender: TObject);
     procedure btnExample1Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure pbsEditClick(Sender: TObject);
   private
     { Private declarations }
     FDriver: ITSWebDriverBase;
@@ -44,7 +47,7 @@ type
     procedure Run(AProc: TProc; AUrl: string = ''; ACloseSection: Boolean = False ); // True);
     procedure ExampleLoginAndScrap;
     procedure ExampleDynamicElement;
-    procedure ExampleGitHubBio;
+    procedure PBS;
     procedure ExampleGitHubFollowers;
     procedure ExampleChromeSearch;
   public
@@ -114,12 +117,56 @@ begin
   );
 end;
 
-procedure TFrmMain.btnExample3Click(Sender: TObject);
+
+
+procedure TFrmMain.PBS;
+var
+  LElement: ITSWebDriverElement;
+  LElements: TTSWebDriverElementList;
 begin
-  Self.Run(
-    ExampleGitHubBio,
-    'https://letcode.in/elements'
-  );
+  LElement := FChromeDriver.FindElement(FBy.ClassName('eventBtn'));
+  LElement.Click();
+  FChromeDriver.WaitForPageReady();
+//bejelentkezés
+  LElement := FChromeDriver.FindElement(FBy.Id('userId'));
+  LElement.SendKeys('K14737/6');
+  LElement := FChromeDriver.FindElement(FBy.Id('userPass'));
+  LElement.SendKeys('Schwabo1');
+  LElement := FChromeDriver.FindElement(FBy.Id('userPass'));
+  LElement := FChromeDriver.FindElement(FBy.id('loginbutton'));
+  LElement.Click();
+  FChromeDriver.WaitForPageReady();
+  LElement := FChromeDriver.FindElement(FBy.Id('headerSearchTextBox'));
+  LElement.SendKeys('46042');
+  LElement := FChromeDriver.FindElement(FBy.id('headerSearchButton'));
+  LElement.Click();
+  FChromeDriver.WaitForPageReady();
+
+{
+
+  FChromeDriver.FindElement(FBy.ID('search')).Click();
+  FChromeDriver.WaitForSelector('.media');
+  with FChromeDriver.FindElement(FBy.CssSelector('.media-content > span')) do
+  begin
+    MemLog.Lines.AddPair('GitHub bio', GetText());
+  end;
+}
+end;
+
+procedure TFrmMain.pbsEditClick(Sender: TObject);
+var
+  LElement: ITSWebDriverElement;
+begin
+  LElement := FChromeDriver.FindElement(FBy.Id('headerSearchTextBox'));
+  LElement.SendKeys(pbsEdit.Text);
+  LElement := FChromeDriver.FindElement(FBy.id('headerSearchButton'));
+  LElement.Click();
+  FChromeDriver.WaitForPageReady();
+end;
+
+procedure TFrmMain.btnPbsClick(Sender: TObject);
+begin
+  Self.Run(PBS, 'https://www.pbs-shop.hu/' );  //    'https://letcode.in/elements'
 end;
 
 procedure TFrmMain.btnExample4Click(Sender: TObject);
@@ -171,6 +218,7 @@ begin
     'file:///' + TPath.GetFullPath('..\..\test\mocks\formPage.html').Replace('\', '/')
   );
 end;
+
 
 procedure TFrmMain.ExampleChromeSearch;
 var
@@ -229,19 +277,6 @@ begin
   end;
 end;
 
-procedure TFrmMain.ExampleGitHubBio;
-begin
-  FChromeDriver.FindElement(FBy.Name('username')).SendKeys('GabrielTrigo');
-
-  FChromeDriver.FindElement(FBy.ID('search')).Click();
-
-  FChromeDriver.WaitForSelector('.media');
-
-  with FChromeDriver.FindElement(FBy.CssSelector('.media-content > span')) do
-  begin
-    MemLog.Lines.AddPair('GitHub bio', GetText());
-  end;
-end;
 
 procedure TFrmMain.ExampleGitHubFollowers;
 var
